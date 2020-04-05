@@ -1,0 +1,10 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--tag=gcr.io/$PROJECT_ID/error-monitor"
+      - "."
+    waitFor: ["-"]
+
+images:
+  - "gcr.io/$PROJECT_ID/error-monitor"

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: error-monitor
+spec:
+  selector:
+    matchLabels:
+      app: error-monitor
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: error-monitor
+    spec:
+      containers:
+        - name: monitor
+          image: gcr.io/[project]/error-monitor
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/credentials/error-monitor-keyfile.json"
+            - name: SLACK_HOOK
+              value: ""
+            - name: PROJECT_ID
+              value: ""
+          volumeMounts:
+            - name: google-credentials
+              mountPath: /credentials
+              readOnly: true
+      volumes:
+        - name: google-credentials
+          secret:
+            secretName: error-monitor-keyfile
