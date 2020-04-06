@@ -1,7 +1,7 @@
 # Slackdriver
 ## Google Stackdriver error reporting monitor 
 
-Monitoring the slightly exceptional Google Cloud service Stackdriver Error reporting and push the errors to your Slack instance. Stackdriver doesn't provide all the information so sometimes you are hit with a stack-trace only, so this app ties the errors with the log event to extract things like pod name etc.   
+Monitoring the slightly exceptional Google Cloud service Stackdriver Error reporting and push the errors to your Slack instance. Stackdriver error reporting doesn't provide much other information than a stack trace, so this app is enriching the errors with the log event to extract things like pod name etc.   
 
 Currently monitoring errors for GKE, Kubernetes cluster, and Google Function. If you need more error support, please create a PR.
 
