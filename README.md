@@ -1,4 +1,8 @@
 # Slackdriver
+## Doesn't Google Cloud already support this?
+Sort of, via [email forwarding](https://cloud.google.com/error-reporting/docs/notifications).
+
+
 ## Google Stackdriver error reporting monitor 
 
 Monitoring the slightly exceptional Google Cloud service Stackdriver Error reporting and push the errors to your Slack instance. Stackdriver error reporting doesn't provide much other information than a stack trace, so this app is enriching the errors with the log event to extract things like pod name etc.   
