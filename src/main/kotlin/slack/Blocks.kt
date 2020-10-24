@@ -7,10 +7,10 @@ import kotlinx.serialization.json.JsonConfiguration
 @Serializable
 class Blocks(vararg val blocks: SectionBlock) {
     private companion object {
-        val json = Json(JsonConfiguration.Stable)
+        val json = Json { }
     }
 
     fun asJson(): String {
-        return json.stringify(serializer(), this)
+        return json.encodeToString(serializer(), this)
     }
 }

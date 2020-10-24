@@ -3,15 +3,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     application
-    kotlin("jvm") version "1.3.70"
-    kotlin("plugin.serialization") version "1.3.70"
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
 
     //https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-group = "com.gerror"
-version = "0.0.1"
+group = "com.slackdriver"
+version = "0.0.2"
 
 application {
     mainClassName = "MainKt"
@@ -19,12 +19,12 @@ application {
 
 dependencies {
     implementation("khttp:khttp:1.0.0")
-    implementation("com.google.cloud:google-cloud-errorreporting:0.119.1-beta")
-    implementation("com.google.cloud:google-cloud-logging:1.100.0")
+    implementation("com.google.cloud:google-cloud-errorreporting:0.120.5-beta")
+    implementation("com.google.cloud:google-cloud-logging:1.102.0")
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc")
 }
 
 repositories {
