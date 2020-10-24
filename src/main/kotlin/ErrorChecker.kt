@@ -26,7 +26,7 @@ class ErrorChecker(config: Config) : Runnable {
                 println("${Instant.now()} No new errors found, skipping until next scheduled run")
                 return
             }
-            val recentErrors = getErrors(groups, it)
+            val recentErrors = mostRecentErrorPerGroup(groups, it)
             val newErrors = recentErrors.filter(seen)
             //newErrors.forEach { println(it) }
             println("${Instant.now()} Got ${newErrors.size} new unseen errors")
@@ -61,7 +61,7 @@ class ErrorChecker(config: Config) : Runnable {
         val escapedMessageTitle = messageTitle.replace("\"", "\\\"")
         return LoggingOptions.newBuilder().setProjectId(projectId).build().service.use {
             it.listLogEntries(Logging.EntryListOption.filter(
-                            " resource.type=container OR resource.type=cloud_function OR resource.type=k8s_cluster" +
+                            " resource.type=k8s_container OR resource.type=cloud_function OR resource.type=k8s_cluster" +
                                     " timestamp > \"${timestamp.minusSeconds(1L)}\"" +
                                     " timestamp < \"${timestamp.plusSeconds(1L)}\"" +
                                     " textPayload : \"${escapedMessageTitle}\""
@@ -70,10 +70,11 @@ class ErrorChecker(config: Config) : Runnable {
         }
     }
 
-    private fun getErrors(groups: List<ErrorGroupStats>, client: ErrorStatsServiceClient): List<ErrorEvent> {
+    private fun mostRecentErrorPerGroup(groups: List<ErrorGroupStats>, client: ErrorStatsServiceClient): List<ErrorEvent> {
         val requestBuilder = ListEventsRequest.newBuilder()
                 .setProjectName(projectName.toString())
                 .setTimeRange(QueryTimeRange.newBuilder().setPeriod(PERIOD))
+                .setPageSize(1)
         return groups.flatMap {
             client.listEvents(requestBuilder.setGroupId(it.group.groupId).build()).iterateAll()
         }.toList()

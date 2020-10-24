@@ -19,10 +19,10 @@ interface Error {
                         e.error.message,
                         e.count)
             }
-            return GkeError(extractLabel(e.logEntry, "zone"),
+            return GkeError(extractLabel(e.logEntry, "location"),
                     extractLabel(e.logEntry, "cluster_name"),
-                    extractLabel(e.logEntry, "namespace_id"),
-                    extractLabel(e.logEntry, "pod_id"),
+                    extractLabel(e.logEntry, "namespace_name"),
+                    extractLabel(e.logEntry, "pod_name"),
                     extractLabel(e.logEntry, "container_name"),
                     getErrorTimestamp(e),
                     e.error.message,
