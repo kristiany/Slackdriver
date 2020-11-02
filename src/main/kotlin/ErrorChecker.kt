@@ -1,8 +1,14 @@
+import cache.Seen
+import cache.SeenKey
 import com.google.cloud.errorreporting.v1beta1.ErrorStatsServiceClient
 import com.google.cloud.logging.LogEntry
 import com.google.cloud.logging.Logging
 import com.google.cloud.logging.LoggingOptions
-import com.google.devtools.clouderrorreporting.v1beta1.*
+import com.google.devtools.clouderrorreporting.v1beta1.ErrorEvent
+import com.google.devtools.clouderrorreporting.v1beta1.ErrorGroupStats
+import com.google.devtools.clouderrorreporting.v1beta1.ListEventsRequest
+import com.google.devtools.clouderrorreporting.v1beta1.ProjectName
+import com.google.devtools.clouderrorreporting.v1beta1.QueryTimeRange
 import com.google.protobuf.Timestamp
 import errors.Error
 import java.time.Instant
@@ -26,7 +32,11 @@ class ErrorChecker(config: Config) : Runnable {
                 println("${Instant.now()} No new errors found, skipping until next scheduled run")
                 return
             }
-            val recentErrors = mostRecentErrorPerGroup(groups, it)
+
+            val unseenKeys = groups.map { g -> toKey(g) }.filter(seen)
+            val unseenGroups = groups.filter { g -> unseenKeys.contains(toKey(g)) }
+
+            val recentErrors = mostRecentErrorPerGroup(unseenGroups, it)
             val newErrors = recentErrors.filter(seen)
             //newErrors.forEach { println(it) }
             println("${Instant.now()} Got ${newErrors.size} new unseen errors")
@@ -35,13 +45,16 @@ class ErrorChecker(config: Config) : Runnable {
                 return
             }
 
-            errorToLogMapping(groups)
+            errorToLogMapping(unseenGroups)
                     .map { Error.from(it) }
                     .forEach { report(it) }
 
-            seen.update(newErrors)
+            seen.update(unseenKeys)
         }
     }
+
+    private fun toKey(it: ErrorGroupStats) =
+            SeenKey(it.affectedServicesList, it.group.groupId)
 
     private fun errorToLogMapping(groups: List<ErrorGroupStats>): List<ErrorMappedToLog> =
             LoggingOptions.newBuilder().setProjectId(projectId).build().service.use {
