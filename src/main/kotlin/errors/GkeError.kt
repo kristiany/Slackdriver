@@ -20,10 +20,10 @@ data class GkeError(val region: String?,
     }
 
     override fun slackMessage(): String {
-        return Blocks(SectionBlock("GKE Cluster: *${cluster}* (${region})\n" +
-                "Pod: *${pod} ${container}*\n" +
-                "Time: *${timestamp}*\n" +
-                "Count: *${count}*"),
+        return Blocks(SectionBlock("*${cluster}* (${region}) :point_left: GKE Cluster\n" +
+                "*${pod} ${container}* :point_left: Pod/container\n" +
+                "${displayTimestamp(timestamp)}\n" +
+                displayCount(count)),
                 CodeBlock(stacktrace)).asJson()
     }
 

@@ -4,13 +4,22 @@ import ErrorMappedToLog
 import SlackReporter
 import com.google.cloud.logging.LogEntry
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 interface Error {
     fun report(reporter: SlackReporter)
 
     fun slackMessage(): String
 
+    fun displayTimestamp(t: Instant?) = "*${formatter.format(t)}* (${t}) :point_left: Time"
+
+    fun displayCount(count: Long) = "*${count}* error${if (count > 1) "s" else ""}"
+
     companion object {
+        val timeZoneId = System.getenv("ZONE_ID")?.let { ZoneId.of(it) } ?: ZoneId.of("CET")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(timeZoneId);
+
         fun from(e: ErrorMappedToLog): Error {
             if (e.logEntry?.resource?.type.equals("cloud_function")) {
                 return GFunctionError(extractLabel(e.logEntry, "region"),

@@ -22,6 +22,8 @@ spec:
               value: ""
             - name: PROJECT_ID
               value: ""
+            - name: ZONE_ID
+              value: "CET"
           volumeMounts:
             - name: google-credentials
               mountPath: /credentials

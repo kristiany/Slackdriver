@@ -16,9 +16,9 @@ data class GFunctionError(val region: String?,
     }
 
     override fun slackMessage(): String {
-        return Blocks(SectionBlock("Function: *${function}* (${region})\n" +
-                "Time: *${timestamp}*\n" +
-                "Count: *${count}*"),
+        return Blocks(SectionBlock("*${function}* (${region}) :point_left: Function\n" +
+                "${displayTimestamp(timestamp)}\n" +
+                displayCount(count)),
                 SectionBlock("```${stacktrace}```")).asJson()
     }
 
