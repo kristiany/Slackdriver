@@ -16,14 +16,21 @@ spec:
         - name: monitor
           image: gcr.io/[project]/error-monitor
           env:
+            # Auth for reading stackdriver error reporting and logs
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/credentials/error-monitor-keyfile.json"
+            # Slack webhook for posting the message
             - name: SLACK_HOOK
               value: ""
+            # Google Cloud project id
             - name: PROJECT_ID
               value: ""
+            # What timezone to display the time in
             - name: ZONE_ID
               value: "CET"
+            # Filter for collapsing the stack trace for better readability, e.g. "org.eclipse.jetty.,spark.http."
+            - name: STACKTRACE_COLLAPSE_FILTERLIST
+              value: ""
           volumeMounts:
             - name: google-credentials
               mountPath: /credentials

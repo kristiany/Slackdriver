@@ -1,6 +1,7 @@
 package errors
 
 import SlackReporter
+import errors.Error.Companion.displayConfig
 import slack.Blocks
 import slack.CodeBlock
 import slack.SectionBlock
@@ -24,7 +25,7 @@ data class GkeError(val region: String?,
                 "*${pod} ${container}* :point_left: Pod/container\n" +
                 "${displayTimestamp(timestamp)}\n" +
                 displayCount(count)),
-                CodeBlock(stacktrace)).asJson()
+                CodeBlock(stacktrace, displayConfig)).asJson()
     }
 
     override fun toString(): String {

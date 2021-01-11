@@ -10,6 +10,7 @@ import com.google.devtools.clouderrorreporting.v1beta1.ListEventsRequest
 import com.google.devtools.clouderrorreporting.v1beta1.ProjectName
 import com.google.devtools.clouderrorreporting.v1beta1.QueryTimeRange
 import com.google.protobuf.Timestamp
+import config.Config
 import errors.Error
 import java.time.Instant
 
