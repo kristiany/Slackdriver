@@ -17,7 +17,7 @@ data class GkeError(val location: String?,
                     val count: Long) : Error {
 
     override fun report(reporter: SlackReporter) {
-        reporter.post(cluster, slackMessage())
+        reporter.post(listOf(cluster, namespace), slackMessage())
     }
 
     override fun slackMessage(): String {

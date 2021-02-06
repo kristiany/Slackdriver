@@ -14,7 +14,7 @@ data class CloudRunError(val location: String?,
                          val count: Long) : Error {
 
     override fun report(reporter: SlackReporter) {
-        reporter.post("default", slackMessage())
+        reporter.post(listOf(serviceName), slackMessage())
     }
 
     override fun slackMessage(): String {

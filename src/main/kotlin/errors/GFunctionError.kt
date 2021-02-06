@@ -12,7 +12,7 @@ data class GFunctionError(val location: String?,
                           val count: Long) : Error {
 
     override fun report(reporter: SlackReporter) {
-        reporter.post("default", slackMessage())
+        reporter.post(listOf(function), slackMessage())
     }
 
     override fun slackMessage(): String {

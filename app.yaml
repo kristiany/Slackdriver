@@ -19,8 +19,25 @@ spec:
             # Auth for reading stackdriver error reporting and logs
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/credentials/error-monitor-keyfile.json"
-            # Slack webhook for posting the message
-            - name: SLACK_HOOK
+            # Slack webhooks and router filtering for posting the message
+            # Default Slack hook for when no notification filter applies
+            - name: SLACK_HOOK_DEFAULT
+              value: ""
+            # Format ROUTE_SLACK_HOOK_*, the suffix name need to be identical to a suffix name for a notification filter
+            - name: ROUTE_SLACK_HOOK_DEV
+              value: ""
+            - name: ROUTE_SLACK_HOOK_PROD
+              value: ""
+            # Format ROUTE_FILTER_*, the suffix name need to be identical to a suffix name to a slack hook.
+            # Value should be a comma-separated list of your resource names, e.g. 'my-dev-k8s-cluster, my-dev-cloud-run-service'.
+            # These will be matched against the following properties:
+            #   * GKE cluster name
+            #   * GKE namespace
+            #   * Cloud function name
+            #   * Cloud run service name
+            - name: ROUTE_FILTER_DEV
+              value: ""
+            - name: ROUTE_FILTER_PROD
               value: ""
             # Google Cloud project id
             - name: PROJECT_ID

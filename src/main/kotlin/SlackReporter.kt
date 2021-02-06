@@ -5,30 +5,29 @@ import java.net.URL
 import java.time.Instant
 
 class SlackReporter(config: Config) {
-    private val channelRoutes = config.routes
+    private val channelRoutes = config.notificationsConfig.filteredRoutes
+    private val defaultHook = config.notificationsConfig.defaultHook
 
-    fun post(channelTypeSuggestion: String?, message: String) {
-        val channelType = channelTypeOrDefault(channelTypeSuggestion)
-        channelRoutes[channelType]?.let { hook ->
-            postToSlack(channelType, message, hook)
-        } ?: throw RuntimeException("Channel type '${channelType}' not found in the channel router")
+    fun post(channelSuggestions: List<String?>, message: String) {
+        val validFilter = channelSuggestions.filterNotNull()
+            .filterNot { channelRoutes[it] == null }
+            .firstOrNull()
+        validFilter?.let {
+                    postToSlack(it, message, channelRoutes[it]!!)
+                    return
+                }
+        println("No specific route found for resource names '$channelSuggestions', sending to default.")
+        postToSlack("default", message, defaultHook)
     }
 
-    private fun channelTypeOrDefault(channelType: String?): String {
-        if (channelType != null && channelRoutes.containsKey(channelType)) {
-            return channelType
-        }
-        return "default"
-    }
-
-    private fun postToSlack(channelType: String, payload: String, hook: URL) {
+    private fun postToSlack(resourceName: String, payload: String, hook: URL) {
         val headers = mapOf("Content-type" to "application/json")
         val response = post(url = hook.toString(), headers = headers, data = payload)
         if (response.statusCode == 200) {
             println("${Instant.now()} Message posted to Slack!")
             return
         }
-        val errorMessage = "Error posting message '${payload}' to Slack channel type ${channelType}, " +
+        val errorMessage = "Error posting message '${payload}' to Slack with routing filter ${resourceName}, " +
                 "response: ${response.statusCode} - '${response.text}'"
         println(errorMessage)
         throw RuntimeException(errorMessage)
