@@ -7,7 +7,7 @@ import slack.CodeBlock
 import slack.SectionBlock
 import java.time.Instant
 
-data class GkeError(val region: String?,
+data class GkeError(val location: String?,
                     val cluster: String?,
                     val namespace: String?,
                     val pod: String?,
@@ -21,7 +21,7 @@ data class GkeError(val region: String?,
     }
 
     override fun slackMessage(): String {
-        return Blocks(SectionBlock("*${cluster}* (${region}) :point_left: GKE Cluster\n" +
+        return Blocks(SectionBlock("*${cluster}* (${location}) :point_left: GKE Cluster\n" +
                 "*${pod} ${container}* :point_left: Pod/container\n" +
                 "${displayTimestamp(timestamp)}\n" +
                 displayCount(count)),
@@ -30,7 +30,7 @@ data class GkeError(val region: String?,
 
     override fun toString(): String {
         val messageTitle = stacktrace.substringBefore("\n")
-        return "errors.GkeError(region=$region, cluster=$cluster, namespace=$namespace, pod=$pod, container=$container, " +
+        return "errors.GkeError(region=$location, cluster=$cluster, namespace=$namespace, pod=$pod, container=$container, " +
                 "timestamp=$timestamp, messageTitle=$messageTitle, count=$count)"
     }
 }

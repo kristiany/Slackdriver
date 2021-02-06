@@ -28,6 +28,16 @@ interface Error {
                         e.error.message,
                         e.count)
             }
+            if (e.logEntry?.resource?.type.equals("cloud_run_revision")) {
+                return CloudRunError(extractLabel(e.logEntry, "location"),
+                    extractLabel(e.logEntry, "service_name"),
+                    extractLabel(e.logEntry, "revision_name"),
+                    extractLabel(e.logEntry, "configuration_name"),
+                    getErrorTimestamp(e),
+                    e.error.message,
+                    e.count
+                )
+            }
             return GkeError(extractLabel(e.logEntry, "location"),
                     extractLabel(e.logEntry, "cluster_name"),
                     extractLabel(e.logEntry, "namespace_name"),

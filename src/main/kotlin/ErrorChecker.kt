@@ -73,13 +73,14 @@ class ErrorChecker(config: Config) : Runnable {
     private fun findLogEntries(lastSeen: Timestamp, messageTitle: String): List<LogEntry> {
         val timestamp = Instant.ofEpochSecond(lastSeen.seconds)
         val escapedMessageTitle = messageTitle.replace("\"", "\\\"")
+        val resourceTypes = listOf("k8s_container", "cloud_function", "k8s_cluster", "cloud_run_revision")
         return LoggingOptions.newBuilder().setProjectId(projectId).build().service.use {
             it.listLogEntries(Logging.EntryListOption.filter(
-                            " resource.type=k8s_container OR resource.type=cloud_function OR resource.type=k8s_cluster" +
-                                    " timestamp > \"${timestamp.minusSeconds(1L)}\"" +
-                                    " timestamp < \"${timestamp.plusSeconds(1L)}\"" +
-                                    " textPayload : \"${escapedMessageTitle}\""
-                    ))
+                    resourceTypes.joinToString { t -> " OR resource.type=$t" } +
+                            " timestamp > \"${timestamp.minusSeconds(1L)}\"" +
+                            " timestamp < \"${timestamp.plusSeconds(1L)}\"" +
+                            " textPayload : \"${escapedMessageTitle}\""
+            ))
                     .iterateAll().toList()
         }
     }

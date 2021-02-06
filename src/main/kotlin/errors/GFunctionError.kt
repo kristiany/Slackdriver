@@ -5,7 +5,7 @@ import slack.Blocks
 import slack.SectionBlock
 import java.time.Instant
 
-data class GFunctionError(val region: String?,
+data class GFunctionError(val location: String?,
                           val function: String?,
                           val timestamp: Instant?,
                           val stacktrace: String,
@@ -16,7 +16,7 @@ data class GFunctionError(val region: String?,
     }
 
     override fun slackMessage(): String {
-        return Blocks(SectionBlock("*${function}* (${region}) :point_left: Function\n" +
+        return Blocks(SectionBlock("*${function}* (${location}) :point_left: Function\n" +
                 "${displayTimestamp(timestamp)}\n" +
                 displayCount(count)),
                 SectionBlock("```${stacktrace}```")).asJson()
@@ -24,6 +24,6 @@ data class GFunctionError(val region: String?,
 
     override fun toString(): String {
         val messageTitle = stacktrace.substringBefore("\n")
-        return "errors.GFunctionError(region=$region, function=$function, timestamp=$timestamp, messageTitle=$messageTitle, count=$count)"
+        return "errors.GFunctionError(region=$location, function=$function, timestamp=$timestamp, messageTitle=$messageTitle, count=$count)"
     }
 }
